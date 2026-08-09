@@ -19,6 +19,17 @@ public sealed class StateStore
         UnmappedMemberHandling = System.Text.Json.Serialization.JsonUnmappedMemberHandling.Skip
     };
 
+    // Windows keeps data.json next to the executable; the mac shell passes an explicit path
+    // under ~/Library/Application Support so the read-only .app bundle is never written into.
+    public StateStore(string? dataDirectory = null)
+    {
+        if (!string.IsNullOrEmpty(dataDirectory))
+        {
+            FilePath = Path.Combine(dataDirectory, "data.json");
+            BackupPath = Path.Combine(dataDirectory, "data.backup.json");
+        }
+    }
+
     public string FilePath { get; } = Path.Combine(AppContext.BaseDirectory, "data.json");
     public string BackupPath { get; } = Path.Combine(AppContext.BaseDirectory, "data.backup.json");
     private bool _preserveRecoveredLoadFilesOnNextSave;

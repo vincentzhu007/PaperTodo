@@ -32,3 +32,9 @@ PaperTodo/
 1. 本地 macOS：`dotnet build PaperTodo.Core` / `PaperTodo.Mac` 全程可验证。
 2. fork CI：`debug.yml` 已改为所有分支 push 均在 `windows-latest` 构建 WPF 外壳（含子模块与内置 LMDB DLL）。
 3. 行为不变性：CI 只保编译绿；行为靠上述提交纪律 + 接缝代码审查保障。
+
+## 实施状态（2026-08-09）
+
+- `PaperTodo.Core`（net10.0）已落地：数据协议、胶囊大脑、屏幕平台接缝（`ScreenPlatform`/`GlobalShortcutState`/`Typography`），Windows 侧构建验证绿。
+- `PaperTodo.Mac`（net10.0 + Avalonia 11.3）骨架已落地：待办纸片窗口（无边框圆角、`NSFloatingWindowLevel` + `canJoinAllSpaces`）、`MacScreenPlatform`（Avalonia WorkingArea→DipRect）、`StateStore` 可指定数据目录（mac 用 `~/Library/Application Support/PaperTodo`）。
+- `scripts/bundle-mac.sh` 产出自包含 `.app`（Info.plist `NSHighResolutionCapable` 解决裸 dotnet 进程 Scaling=1 问题；当前 `LSUIElement=false` 便于退出，状态栏图标增量中翻转为 agent app）。
