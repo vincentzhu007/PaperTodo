@@ -9,13 +9,13 @@ namespace PaperTodo.Mac;
 // primary name and falls back to the primary work area for unknown devices.
 internal sealed class MacScreenPlatform : IScreenPlatform
 {
-    private readonly Avalonia.Controls.Screens _screens;
+    private readonly Avalonia.Controls.Screens? _screens;
 
-    public MacScreenPlatform(Avalonia.Controls.Screens screens) => _screens = screens;
+    public MacScreenPlatform(Avalonia.Controls.Screens? screens) => _screens = screens;
 
     public string? PrimaryMonitorDeviceName => null;
 
-    public DipRect PrimaryWorkArea => ToDipRect(_screens.Primary?.WorkingArea, _screens.Primary?.Scaling ?? 1);
+    public DipRect PrimaryWorkArea => ToDipRect(_screens?.Primary?.WorkingArea, _screens?.Primary?.Scaling ?? 1);
 
     public DipRect? WorkAreaForDevice(string normalizedDeviceName) => null;
 

@@ -50,9 +50,9 @@ cat > "$APP_DIR/Contents/Info.plist" <<'PLIST'
   <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
   <key>LSMinimumSystemVersion</key><string>13.0</string>
   <key>NSHighResolutionCapable</key><true/>
-  <!-- Agent app (ADR 0004) lands with the status-bar icon; until then keep a Dock icon
-       so the skeleton can be quit normally. Flip LSUIElement to true in that increment. -->
-  <key>LSUIElement</key><false/>
+  <!-- Agent app (ADR 0004): no Dock icon, no menu bar; the status item is the only entry.
+       Quit via the status menu; closing all paper windows keeps the app alive. -->
+  <key>LSUIElement</key><true/>
 </dict>
 </plist>
 PLIST
