@@ -461,7 +461,7 @@ public sealed class StateStore
         state.ResizeGripMode = ResizeGripModes.Normalize(state.ResizeGripMode);
         state.DeepCapsuleSide = DeepCapsuleSides.Normalize(state.DeepCapsuleSide);
         state.DeepCapsuleGapSize = DeepCapsuleGapSizes.Normalize(state.DeepCapsuleGapSize);
-        state.DeepCapsuleMonitorDeviceName = WindowWorkAreaHelper.NormalizeQueueMonitorDeviceName(state.DeepCapsuleMonitorDeviceName);
+        state.DeepCapsuleMonitorDeviceName = ScreenPlatform.NormalizeQueueMonitorDeviceName(state.DeepCapsuleMonitorDeviceName);
         state.TodoVisualSize = TodoVisualSizes.Normalize(state.TodoVisualSize);
         state.NoteTextSize = VisualTextSizes.Normalize(state.NoteTextSize);
         state.TitleTextSize = VisualTextSizes.Normalize(state.TitleTextSize);
@@ -517,8 +517,8 @@ public sealed class StateStore
 
         state.MaxTitleLength = PaperTitles.NormalizeMaxTitleLength(state.MaxTitleLength);
         state.DeepCapsuleTitleMeasureCharacterLimit = Math.Clamp(state.DeepCapsuleTitleMeasureCharacterLimit, 0, PaperTitles.MaxConfigurableTitleLength);
-        state.GlobalHotkeys = GlobalShortcutCatalog.NormalizeBindings(state.GlobalHotkeys);
-        state.GlobalHotkeyEnabled = GlobalShortcutCatalog.NormalizeEnabled(state.GlobalHotkeyEnabled);
+        state.GlobalHotkeys = GlobalShortcutState.NormalizeBindings(state.GlobalHotkeys);
+        state.GlobalHotkeyEnabled = GlobalShortcutState.NormalizeEnabled(state.GlobalHotkeyEnabled);
 
         if (!state.UseCapsuleMode || !state.UseDeepCapsuleMode)
         {
@@ -622,7 +622,7 @@ public sealed class StateStore
             var capsuleMonitorDeviceName = string.IsNullOrWhiteSpace(paper.CapsuleMonitorDeviceName)
                 ? (state.DeepCapsuleMonitorDeviceName ?? "")
                 : paper.CapsuleMonitorDeviceName.Trim();
-            paper.CapsuleMonitorDeviceName = WindowWorkAreaHelper.NormalizeQueueMonitorDeviceName(capsuleMonitorDeviceName);
+            paper.CapsuleMonitorDeviceName = ScreenPlatform.NormalizeQueueMonitorDeviceName(capsuleMonitorDeviceName);
             NormalizeDeepCapsuleExpandedGeometry(paper);
 
             paper.Title = PaperTitles.CleanCustomTitle(paper.Title, state.MaxTitleLength);
@@ -811,7 +811,7 @@ public sealed class StateStore
         var monitor = string.IsNullOrWhiteSpace(paper.DeepCapsuleExpandedMonitorDeviceName)
             ? paper.CapsuleMonitorDeviceName
             : paper.DeepCapsuleExpandedMonitorDeviceName.Trim();
-        paper.DeepCapsuleExpandedMonitorDeviceName = WindowWorkAreaHelper.NormalizeQueueMonitorDeviceName(monitor);
+        paper.DeepCapsuleExpandedMonitorDeviceName = ScreenPlatform.NormalizeQueueMonitorDeviceName(monitor);
     }
 
     private static void ClearDeepCapsuleExpandedGeometry(PaperData paper)
@@ -872,7 +872,7 @@ public sealed class StateStore
     }
 
     private static string QueueKey(string? monitorDeviceName, string? side)
-        => $"{WindowWorkAreaHelper.NormalizeQueueMonitorDeviceName(monitorDeviceName)}|{(side == DeepCapsuleSides.Left ? DeepCapsuleSides.Left : DeepCapsuleSides.Right)}";
+        => $"{ScreenPlatform.NormalizeQueueMonitorDeviceName(monitorDeviceName)}|{(side == DeepCapsuleSides.Left ? DeepCapsuleSides.Left : DeepCapsuleSides.Right)}";
 
     private static double NormalizeDeepCapsuleStartTopMargin(
         double value,

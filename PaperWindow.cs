@@ -1957,7 +1957,7 @@ public sealed partial class PaperWindow : Window
             startScreenPosition =
                 WindowNative.TryGetCursorScreenPosition(out var cursor)
                     ? cursor
-                    : DeviceScreenPoint.FromPoint(
+                    : ScreenGeometryWpf.FromPoint(
                         PointToScreen(startPosition));
         }
         _titleBarDragSession = new TitleBarDragSession(

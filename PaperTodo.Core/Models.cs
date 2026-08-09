@@ -165,16 +165,16 @@ public static class TodoVisualSizes
 
         return metrics with
         {
-            TextFontSize = AppTypography.Scale(metrics.TextFontSize),
-            TextVerticalPadding = AppTypography.Scale(metrics.TextVerticalPadding),
-            AppendMinHeight = AppTypography.Scale(metrics.AppendMinHeight),
-            AppendGlyphFontSize = AppTypography.Scale(metrics.AppendGlyphFontSize),
-            TrashGlyphFontSize = AppTypography.Scale(metrics.TrashGlyphFontSize),
-            LinkedPaperNameFontSize = AppTypography.Scale(metrics.LinkedPaperNameFontSize),
-            LinkedPaperIconFontSize = AppTypography.Scale(metrics.LinkedPaperIconFontSize),
-            CheckColumnWidth = AppTypography.Scale(metrics.CheckColumnWidth),
-            GhostTextFontSize = AppTypography.Scale(metrics.GhostTextFontSize),
-            RowMinHeight = AppTypography.Scale(metrics.RowMinHeight)
+            TextFontSize = Typography.Scale(metrics.TextFontSize),
+            TextVerticalPadding = Typography.Scale(metrics.TextVerticalPadding),
+            AppendMinHeight = Typography.Scale(metrics.AppendMinHeight),
+            AppendGlyphFontSize = Typography.Scale(metrics.AppendGlyphFontSize),
+            TrashGlyphFontSize = Typography.Scale(metrics.TrashGlyphFontSize),
+            LinkedPaperNameFontSize = Typography.Scale(metrics.LinkedPaperNameFontSize),
+            LinkedPaperIconFontSize = Typography.Scale(metrics.LinkedPaperIconFontSize),
+            CheckColumnWidth = Typography.Scale(metrics.CheckColumnWidth),
+            GhostTextFontSize = Typography.Scale(metrics.GhostTextFontSize),
+            RowMinHeight = Typography.Scale(metrics.RowMinHeight)
         };
     }
 }
@@ -202,7 +202,7 @@ public static class VisualTextSizes
 
     public static double FontSize(double mediumSize, string? size)
     {
-        return AppTypography.Scale(mediumSize + Correction(size));
+        return Typography.Scale(mediumSize + Correction(size));
     }
 }
 

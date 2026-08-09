@@ -31,7 +31,7 @@ public sealed partial class PaperWindow
         button.PreviewMouseLeftButtonDown += (_, e) =>
         {
             _windowBindingPressStart = HasExperimentalWindowTether
-                ? DeviceScreenPoint.FromPoint(
+                ? ScreenGeometryWpf.FromPoint(
                     PointToScreen(e.GetPosition(this)))
                 : null;
         };

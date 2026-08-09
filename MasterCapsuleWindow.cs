@@ -260,7 +260,7 @@ public sealed class MasterCapsuleWindow : Window
         _pill.PreviewMouseLeftButtonDown += (_, e) =>
         {
             _dragSession = new MasterDragSession(
-                DeviceScreenPoint.FromPoint(PointToScreen(e.GetPosition(this))),
+                ScreenGeometryWpf.FromPoint(PointToScreen(e.GetPosition(this))),
                 _controller.DeepCapsuleStartTopMarginForQueue(_queueMonitorDeviceName, _queueEdge));
             _gestureState = MasterGestureState.Pending;
             _pill.CaptureMouse();
@@ -282,7 +282,7 @@ public sealed class MasterCapsuleWindow : Window
                 return;
             }
 
-            var currentScreenPos = DeviceScreenPoint.FromPoint(PointToScreen(e.GetPosition(this)));
+            var currentScreenPos = ScreenGeometryWpf.FromPoint(PointToScreen(e.GetPosition(this)));
             if (!WindowWorkAreaHelper.TryGetMonitorGeometryForDevice(_queueMonitorDeviceName, this, out var geometry))
             {
                 return;

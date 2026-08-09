@@ -313,7 +313,7 @@ public sealed partial class PaperWindow
 
     private bool MyDeepCapsuleIsLeftEdge => MyDeepCapsuleEdge == EdgeCapsuleEdge.Left;
 
-    private Rect DeepCapsuleWorkArea()
+    private DipRect DeepCapsuleWorkArea()
     {
         return EdgeCapsuleLayout.WorkAreaForQueue(_paper.CapsuleMonitorDeviceName);
     }

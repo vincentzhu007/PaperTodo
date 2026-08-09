@@ -247,10 +247,10 @@ public sealed partial class PaperWindow
     {
         if (_capsuleShell != null && PresentationSource.FromVisual(_capsuleShell) != null)
         {
-            return DeviceScreenPoint.FromPoint(_capsuleShell.PointToScreen(e.GetPosition(_capsuleShell)));
+            return ScreenGeometryWpf.FromPoint(_capsuleShell.PointToScreen(e.GetPosition(_capsuleShell)));
         }
 
-        return DeviceScreenPoint.FromPoint(PointToScreen(e.GetPosition(this)));
+        return ScreenGeometryWpf.FromPoint(PointToScreen(e.GetPosition(this)));
     }
 
     private void BeginCapsulePointerInteraction(DeviceScreenPoint pointerDownScreenPosition)

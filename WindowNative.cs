@@ -592,7 +592,7 @@ internal static class WindowNative
             return target.TransformFromDevice.Transform(point);
         }
 
-        return WindowWorkAreaHelper.DeviceScreenPointToDip(DeviceScreenPoint.FromPoint(point)).ToPoint();
+        return WindowWorkAreaHelper.DeviceScreenPointToDip(ScreenGeometryWpf.FromPoint(point)).ToPoint();
     }
 
     public static void BeginWindowCaptionDrag(Window window)

@@ -170,19 +170,8 @@ internal static class WindowWorkAreaHelper
         return null;
     }
 
-    public static string NormalizeQueueMonitorDeviceName(string? deviceName)
-    {
-        var value = (deviceName ?? "").Trim();
-        if (string.IsNullOrEmpty(value))
-        {
-            return "";
-        }
-
-        var primary = PrimaryMonitorDeviceName();
-        return !string.IsNullOrEmpty(primary) && string.Equals(value, primary, StringComparison.Ordinal)
-            ? ""
-            : value;
-    }
+    public static string NormalizeQueueMonitorDeviceName(string? deviceName) =>
+        ScreenPlatform.NormalizeQueueMonitorDeviceName(deviceName);
 
     public static string PrimaryMonitorDeviceName()
     {

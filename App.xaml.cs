@@ -39,6 +39,12 @@ public partial class App : Application
 
     protected override async void OnStartup(StartupEventArgs e)
     {
+        // Core capsule layout and persisted-state normalization resolve the screen platform
+        // through this seam (ADR 0005); it must be set before any state load.
+        ScreenPlatform.Current = new WindowsScreenPlatform();
+        GlobalShortcutState.NormalizeBindings = GlobalShortcutCatalog.NormalizeBindings;
+        GlobalShortcutState.NormalizeEnabled = GlobalShortcutCatalog.NormalizeEnabled;
+
         if (McpBridge.IsRequested(e.Args))
         {
             base.OnStartup(e);

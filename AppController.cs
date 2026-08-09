@@ -664,7 +664,7 @@ public sealed partial class AppController : IDisposable
 
     private void ApplyNewPaperCapsuleStripBounds(
         PaperData paper,
-        Rect area,
+        DipRect area,
         double width,
         ref double minX,
         ref double maxX)
@@ -3472,7 +3472,7 @@ public sealed partial class AppController : IDisposable
         var maxX = Math.Max(minX, area.Right - paper.Width - margin);
         var minY = area.Top + margin;
         var maxY = Math.Max(minY, area.Bottom - paper.Height - margin);
-        ApplyNewPaperCapsuleStripBounds(paper, area, paper.Width, ref minX, ref maxX);
+        ApplyNewPaperCapsuleStripBounds(paper, area.ToDipRect(), paper.Width, ref minX, ref maxX);
 
         bool Occupied(double x, double y) =>
             State.Papers.Any(p => Math.Abs(p.X - x) < 5 && Math.Abs(p.Y - y) < 5);

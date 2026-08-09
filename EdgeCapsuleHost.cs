@@ -951,12 +951,12 @@ internal sealed partial class EdgeCapsuleHost : IDisposable
                 _appliedFrame.Bounds.Left,
                 _appliedFrame.Bounds.Top);
         }
-        return DeviceScreenPoint.FromPoint(Window.PointToScreen(new Point(0, 0)));
+        return ScreenGeometryWpf.FromPoint(Window.PointToScreen(new Point(0, 0)));
     }
 
     public bool ContainsWindowScreenPoint(Point screenPoint)
     {
-        return ContainsScreenPoint(DeviceScreenPoint.FromPoint(screenPoint));
+        return ContainsScreenPoint(ScreenGeometryWpf.FromPoint(screenPoint));
     }
 
     public bool TryGetMonitorGeometry(string? deviceName, out MonitorGeometry geometry)
@@ -985,7 +985,7 @@ internal sealed partial class EdgeCapsuleHost : IDisposable
     {
         if (!_disposed && PresentationSource.FromVisual(Shell) != null)
         {
-            return DeviceScreenPoint.FromPoint(Shell.PointToScreen(e.GetPosition(Shell)));
+            return ScreenGeometryWpf.FromPoint(Shell.PointToScreen(e.GetPosition(Shell)));
         }
         return default;
     }

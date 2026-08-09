@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Windows;
 
 namespace PaperTodo;
 
@@ -76,29 +75,36 @@ public static class EdgeCapsuleLayout
 
     // Work area of a specific monitor device (empty => primary), with nearest-monitor fallback.
     // Per-queue geometry resolves through this so each (monitor, edge) queue is independent.
-    public static Rect WorkAreaForQueue(string? monitorDeviceName)
+    // Platform reality comes from ScreenPlatform (Windows: Win32 work areas; macOS: visibleFrame).
+    public static DipRect WorkAreaForQueue(string? monitorDeviceName)
     {
-        var normalizedMonitor = WindowWorkAreaHelper.NormalizeQueueMonitorDeviceName(monitorDeviceName);
+        var normalizedMonitor = ScreenPlatform.NormalizeQueueMonitorDeviceName(monitorDeviceName);
         if (!string.IsNullOrEmpty(normalizedMonitor))
         {
-            var resolved = WindowWorkAreaHelper.WorkAreaForDevice(normalizedMonitor);
+            var resolved = ScreenPlatform.Current?.WorkAreaForDevice(normalizedMonitor);
             if (resolved.HasValue)
             {
                 return resolved.Value;
             }
         }
 
-        return SystemParameters.WorkArea;
+        return ScreenPlatform.Current?.PrimaryWorkArea ?? new DipRect(0, 0, 0, 0);
     }
 
     // Edge HWNDs lay out in the target monitor's own 96-DPI coordinate space, then convert the
     // finished rectangle to physical pixels. This keeps slot height, gap and width consistent on
     // mixed-scale displays without mixing the primary monitor's desktop coordinates into sizing.
-    internal static Rect LocalWorkAreaForQueue(string? monitorDeviceName)
+    internal static DipRect LocalWorkAreaForQueue(string? monitorDeviceName)
     {
-        return WindowWorkAreaHelper.TryGetMonitorGeometryForDevice(monitorDeviceName, out var geometry)
-            ? geometry.LocalWorkAreaDip
-            : new Rect(0, 0, SystemParameters.WorkArea.Width, SystemParameters.WorkArea.Height);
+        var normalized = ScreenPlatform.NormalizeQueueMonitorDeviceName(monitorDeviceName);
+        if (!string.IsNullOrEmpty(normalized) &&
+            ScreenPlatform.Current?.TryGetMonitorGeometryForDevice(normalized, out var geometry) == true)
+        {
+            return geometry.LocalWorkAreaDip;
+        }
+
+        var fallback = ScreenPlatform.Current?.PrimaryWorkArea ?? new DipRect(0, 0, 0, 0);
+        return new DipRect(0, 0, fallback.Width, fallback.Height);
     }
 
     // ── Pure per-queue geometry: same math as the static-anchor methods below, but every
@@ -108,7 +114,7 @@ public static class EdgeCapsuleLayout
     public static double TopForIndex(
         int index,
         double startTopMargin,
-        Rect area,
+        DipRect area,
         int slotCount,
         double gap)
     {
@@ -119,7 +125,7 @@ public static class EdgeCapsuleLayout
         return Math.Min(desiredTop, maxTop);
     }
 
-    public static double MaxStartTopMarginForCount(int slotCount, Rect area, double gap)
+    public static double MaxStartTopMarginForCount(int slotCount, DipRect area, double gap)
     {
         var count = Math.Max(1, slotCount);
         var stackHeight = PaperLayoutDefaults.CapsuleHeight + (count - 1) * SlotHeight(gap);
@@ -129,7 +135,7 @@ public static class EdgeCapsuleLayout
 
     public static double NormalizeStartTopMargin(
         double value,
-        Rect area,
+        DipRect area,
         int slotCount,
         double gap)
     {

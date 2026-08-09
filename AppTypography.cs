@@ -18,7 +18,6 @@ public static class AppTypography
     private static CustomFontFace? _customBoldFontFace;
     private static bool _customFontEnhancedBold;
     private static string _textRenderingProfile = TextRenderingProfiles.Standard;
-    private static double _scale = 1.0;
 
     public static XmlLanguage Language { get; } = XmlLanguage.GetLanguage(CultureInfo.CurrentUICulture.IetfLanguageTag);
 
@@ -59,19 +58,11 @@ public static class AppTypography
         _customFontFace != null &&
         _customBoldFontFace != null;
 
-    public static double ScaleFactor => _scale;
+    public static double ScaleFactor => Typography.ScaleFactor;
 
-    public static double Scale(double fontSize)
-    {
-        return Math.Round(fontSize * _scale, 1, MidpointRounding.AwayFromZero);
-    }
+    public static double Scale(double fontSize) => Typography.Scale(fontSize);
 
-    public static double FitChrome(double normalSize)
-    {
-        return _scale <= 1.0
-            ? normalSize
-            : Math.Ceiling(normalSize * _scale);
-    }
+    public static double FitChrome(double normalSize) => Typography.FitChrome(normalSize);
 
     public static void Configure(
         string? preset,
@@ -80,7 +71,7 @@ public static class AppTypography
         string? textRenderingProfile = null)
     {
         _preset = UiFontPresets.Normalize(preset);
-        _scale = OverallFontScales.Normalize(scale);
+        Typography.SetScale(scale);
         _customFontEnhancedBold = customFontEnhancedBold;
         _textRenderingProfile = TextRenderingProfiles.Normalize(textRenderingProfile);
         _customFontFace = TryLoadCustomFontFaceFromCandidates(CustomRegularFontCandidates());
