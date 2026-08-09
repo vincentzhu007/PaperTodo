@@ -16,12 +16,19 @@
     </Border.Background>
 
     <DockPanel Margin="12">
-      <TextBlock x:Name="TitleText"
-                 DockPanel.Dock="Top"
-                 FontSize="15" FontWeight="SemiBold"
-                 Foreground="#333333"
-                 Margin="2,0,0,10"
-                 TextTrimming="CharacterEllipsis" />
+      <DockPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+        <Button x:Name="CollapseButton" DockPanel.Dock="Right"
+                Width="24" Height="24" Content="—" FontSize="14" Padding="0"
+                Background="Transparent" BorderThickness="0"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                Foreground="#88666666"
+                ToolTip.Tip="折叠为胶囊" />
+        <TextBlock x:Name="TitleText"
+                   FontSize="15" FontWeight="SemiBold"
+                   Foreground="#333333"
+                   Margin="2,0,6,0"
+                   TextTrimming="CharacterEllipsis" />
+      </DockPanel>
       <ItemsControl x:Name="ItemsList" Margin="0,2,0,0">
         <ItemsControl.ItemTemplate>
           <DataTemplate x:DataType="pt:PaperItem">

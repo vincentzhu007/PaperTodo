@@ -12,6 +12,8 @@ public partial class TodoPaperWindow : Window
 {
     private readonly PaperData _paper;
 
+    public event Action? CollapseRequested;
+
     public TodoPaperWindow(PaperData paper)
     {
         InitializeComponent();
@@ -24,6 +26,12 @@ public partial class TodoPaperWindow : Window
 
         Opened += (_, _) => ApplyWindowBehaviors();
         PointerPressed += OnPointerPressedForDrag;
+        CollapseButton.Click += (_, _) => CollapseRequested?.Invoke();
+    }
+
+    public void UpdateCollapseButton(bool canCollapse)
+    {
+        CollapseButton.IsVisible = canCollapse;
     }
 
     private void ApplyWindowBehaviors()
@@ -37,6 +45,12 @@ public partial class TodoPaperWindow : Window
 
     private void OnPointerPressedForDrag(object? sender, PointerPressedEventArgs e)
     {
+        // Do not hijack presses on the collapse button (or any other Button).
+        if (e.Source is Button)
+        {
+            return;
+        }
+
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
             BeginMoveDrag(e);

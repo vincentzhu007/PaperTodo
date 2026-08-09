@@ -16,7 +16,8 @@ public partial class App : Application
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "PaperTodo");
 
-    private readonly List<Window> _paperWindows = new();
+    // One session per paper: the expanded window and (lazily created) collapsed capsule.
+    private readonly Dictionary<string, PaperSession> _sessions = new(StringComparer.Ordinal);
     private IClassicDesktopStyleApplicationLifetime? _desktop;
 
     public override void Initialize() => AvaloniaXamlLoader.Load(this);
@@ -33,18 +34,14 @@ public partial class App : Application
             var store = new StateStore(DataDirectory);
             var state = store.Load();
 
-            var papers = state.Papers
-                .Where(p => p.IsVisible && p.Type == PaperTypes.Todo)
-                .ToArray();
-
-            foreach (var paper in papers)
+            foreach (var paper in state.Papers.Where(p => p.Type == PaperTypes.Todo))
             {
-                var window = new TodoPaperWindow(paper);
-                _paperWindows.Add(window);
-                window.Show();
+                var session = new PaperSession(paper);
+                _sessions[paper.Id] = session;
+                session.ShowInitial();
             }
 
-            RegisterScreenPlatform(_paperWindows.FirstOrDefault());
+            RegisterScreenPlatform(_sessions.Values.FirstOrDefault()?.PaperWindow);
 
             InstallStatusBar();
         }
@@ -80,15 +77,93 @@ public partial class App : Application
         switch (selector)
         {
             case "showAllPapers:":
-                foreach (var window in _paperWindows)
+                foreach (var session in _sessions.Values)
                 {
-                    window.Show();
+                    session.ShowAll();
                 }
 
                 break;
             case "quit:":
                 _desktop?.Shutdown();
                 break;
+        }
+    }
+
+    /// <summary>Owns the two window forms of one paper (expanded window + capsule).</summary>
+    private sealed class PaperSession
+    {
+        private readonly PaperData _paper;
+        private CapsuleWindow? _capsule;
+
+        public PaperSession(PaperData paper)
+        {
+            _paper = paper;
+            PaperWindow = new TodoPaperWindow(paper);
+            PaperWindow.CollapseRequested += Collapse;
+        }
+
+        public TodoPaperWindow PaperWindow { get; }
+
+        public void ShowInitial()
+        {
+            if (_paper.IsVisible && !_paper.IsCollapsed)
+            {
+                PaperWindow.Show();
+            }
+            else if (_paper.IsVisible)
+            {
+                GetCapsule().Show();
+            }
+        }
+
+        public void ShowAll()
+        {
+            // "Show everything" restores hidden papers too (hide keeps the paper; it is not a
+            // delete). Collapsed papers come back as capsules.
+            _paper.IsVisible = true;
+            if (_paper.IsCollapsed)
+            {
+                GetCapsule().Show();
+            }
+            else
+            {
+                PaperWindow.Show();
+            }
+        }
+
+        private void Collapse()
+        {
+            _paper.IsCollapsed = true;
+            PaperWindow.Hide();
+            var capsule = GetCapsule();
+            capsule.Position = PaperWindow.Position;
+            capsule.Show();
+        }
+
+        private void Expand()
+        {
+            _paper.IsCollapsed = false;
+            _capsule?.Hide();
+            PaperWindow.Show();
+        }
+
+        private void HideAll()
+        {
+            _paper.IsVisible = false;
+            _capsule?.Hide();
+            PaperWindow.Hide();
+        }
+
+        private CapsuleWindow GetCapsule()
+        {
+            if (_capsule is null)
+            {
+                _capsule = new CapsuleWindow(_paper);
+                _capsule.ExpandRequested += Expand;
+                _capsule.HideRequested += HideAll;
+            }
+
+            return _capsule;
         }
     }
 }
